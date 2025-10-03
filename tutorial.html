@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详细教程 - 网站发布完整指南</title>
+    <meta name="description" content="从零开始学习网站发布的详细教程，包含域名注册、托管配置、HTML/CSS基础、文件上传等完整步骤。">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-orange: #f59e0b;
+            --bg-gray: #f8fafc;
+            --text-dark: #1f2937;
+        }
+        
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .font-serif {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
+            position: sticky;
+            top: 4rem;
+        }
+        
+        .chapter-nav {
+            padding: 1rem;
+        }
+        
+        .chapter-nav h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .chapter-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .chapter-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .chapter-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+        
+        .chapter-link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--secondary-blue);
+        }
+        
+        .chapter-link.active {
+            background: var(--secondary-blue);
+            color: white;
+        }
+        
+        .chapter-link.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .chapter-number {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .chapter-link.active .chapter-number {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .chapter-link.completed .chapter-number {
+            background: #10b981;
+            color: white;
+        }
+        
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            min-height: calc(100vh - 4rem);
+            margin-top: 4rem;
+        }
+        
+        .chapter-section {
+            padding: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            scroll-margin-top: 5rem;
+        }
+        
+        .chapter-section:last-child {
+            border-bottom: none;
+        }
+        
+        .chapter-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .chapter-content {
+            color: #4b5563;
+            line-height: 1.7;
+        }
+        
+        .chapter-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-dark);
+        }
+        
+        .chapter-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem 0;
+            color: var(--text-dark);
+        }
+        
+        .chapter-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .chapter-content ul, .chapter-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        .chapter-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        
+        .code-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .code-title {
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #e2e8f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        
+        .code-content pre {
+            margin: 0;
+            background: transparent !important;
+        }
+        
+        .code-content code {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .step-by-step {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary-blue);
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-number {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--secondary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .step-description {
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        
+        .checklist {
+            background: #f0f9ff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #bae6fd;
+        }
+        
+        .checklist-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist-title::before {
+            content: '✓';
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.5rem;
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checklist-item:hover {
+            background: #f8fafc;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .checklist-item.completed {
+            opacity: 0.7;
+        }
+        
+        .checklist-item.completed label {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn-prev {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .nav-btn-prev:hover {
+            background: #f9fafb;
+            color: var(--secondary-blue);
+        }
+        
+        .nav-btn-next {
+            background: var(--secondary-blue);
+            color: white;
+        }
+        
+        .nav-btn-next:hover {
+            background: var(--primary-blue);
+        }
+        
+        .nav-btn-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin: 0 0.5rem;
+        }
+        
+        .progress-indicator {
+            position: fixed;
+            top: 4rem;
+            right: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 40;
+            min-width: 200px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-blue), var(--accent-orange));
+            transition: width 0.5s ease;
+        }
+        
+        .screenshot {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .screenshot-caption {
+            padding: 0.75rem;
+            background: #f8fafc;
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .tip-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tip-title::before {
+            content: '💡';
+            margin-right: 0.5rem;
+        }
+        
+        .tip-content {
+            color: #92400e;
+            line-height: 1.5;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 1px solid #ef4444;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-title {
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .warning-title::before {
+            content: '⚠️';
+            margin-right: 0.5rem;
+        }
+        
+        .warning-content {
+            color: #dc2626;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-serif font-bold text-gray-900">网站发布教程</h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">首页</a>
+                        <a href="#" class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">详细教程</a>
+                        <a href="tools.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">工具资源</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 进度指示器 -->
+    <div class="progress-indicator">
+        <div class="text-sm font-medium text-gray-700 mb-2">学习进度</div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 10%"></div>
+        </div>
+        <div class="text-xs text-gray-500">第 1 章，共 10 章</div>
+    </div>
+
+    <div class="flex">
+        <!-- 侧边导航 -->
+        <div class="sidebar w-80 flex-shrink-0">
+            <div class="chapter-nav">
+                <h3>教程章节</h3>
+                <ul class="chapter-list">
+                    <li class="chapter-item">
+                        <a href="#chapter1" class="chapter-link active" data-chapter="1">
+                            <span class="chapter-number">1</span>
+                            <span>网站发布基础概念</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter2" class="chapter-link" data-chapter="2">
+                            <span class="chapter-number">2</span>
+                            <span>域名注册和选择</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter3" class="chapter-link" data-chapter="3">
+                            <span class="chapter-number">3</span>
+                            <span>网站托管服务选择</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter4" class="chapter-link" data-chapter="4">
+                            <span class="chapter-number">4</span>
+                            <span>HTML基础入门</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter5" class="chapter-link" data-chapter="5">
+                            <span class="chapter-number">5</span>
+                            <span>CSS样式设计</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter6" class="chapter-link" data-chapter="6">
+                            <span class="chapter-number">6</span>
+                            <span>网站文件准备</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter7" class="chapter-link" data-chapter="7">
+                            <span class="chapter-number">7</span>
+                            <span>使用cPanel部署网站</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter8" class="chapter-link" data-chapter="8">
+                            <span class="chapter-number">8</span>
+                            <span>使用GitHub Pages部署</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter9" class="chapter-link" data-chapter="9">
+                            <span class="chapter-number">9</span>
+                            <span>网站测试和优化</span>
+                        </a>
+                    </li>
+                    <li class="chapter-item">
+                        <a href="#chapter10" class="chapter-link" data-chapter="10">
+                            <span class="chapter-number">10</span>
+                            <span>搜索引擎提交和维护</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content flex-1">
+            <!-- 第1章：网站发布基础概念 -->
+            <section id="chapter1" class="chapter-section">
+                <h2 class="chapter-title">第1章：网站发布基础概念</h2>
+                <div class="chapter-content">
+                    <p>在开始网站发布之旅之前，我们需要了解一些基础概念。这些概念将帮助你更好地理解网站是如何工作的，以及为什么需要某些步骤。</p>
+
+                    <h3>什么是网站？</h3>
+                    <p>网站是一组相关的网页集合，通过互联网访问。每个网站都有一个唯一的地址，称为域名（如 www.example.com）。网站可以包含文本、图片、视频、音频等各种内容。</p>
+
+                    <h3>网站工作原理</h3>
+                    <p>当你在浏览器中输入一个网址时，会发生以下过程：</p>
+                    <ol>
+                        <li><strong>DNS解析</strong>：浏览器将域名转换为服务器的IP地址</li>
+                        <li><strong>建立连接</strong>：浏览器与服务器建立连接</li>
+                        <li><strong>发送请求</strong>：浏览器向服务器请求网页内容</li>
+                        <li><strong>接收响应</strong>：服务器返回网页文件</li>
+                        <li><strong>渲染页面</strong>：浏览器解析并显示网页内容</li>
+                    </ol>
+
+                    <h3>网站发布的关键要素</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">域名（Domain Name）</div>
+                                <div class="step-description">网站的地址，如 yourwebsite.com。需要向域名注册商购买并注册。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">网站托管（Web Hosting）</div>
+                                <div class="step-description">存放网站文件的服务器空间。托管服务商提供存储和访问服务。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">网站文件</div>
+                                <div class="step-description">HTML、CSS、JavaScript等文件，构成网站的内容和功能。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>常见的网站类型</h3>
+                    <ul>
+                        <li><strong>静态网站</strong>：内容固定，由HTML、CSS、JavaScript文件组成</li>
+                        <li><strong>动态网站</strong>：内容可变，通常使用服务器端编程语言（如PHP、Python）</li>
+                        <li><strong>内容管理系统（CMS）</strong>：如WordPress、Joomla等</li>
+                        <li><strong>电子商务网站</strong>：在线商店，具有购物车和支付功能</li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <div class="tip-title">学习建议</div>
+                        <div class="tip-content">
+                            作为初学者，建议从静态网站开始学习。静态网站结构简单，易于理解和维护，是学习网站发布的最佳起点。
+                        </div>
+                    </div>
+
+                    <h3>学习检查清单</h3>
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该理解：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="concept1" name="concept1">
+                            <label for="concept1">网站的基本组成和工作原理</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="concept2" name="concept2">
+                            <label for="concept2">域名、托管和网站文件的作用</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="concept3" name="concept3">
+                            <label for="concept3">不同类型网站的区别</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="concept4" name="concept4">
+                            <label for="concept4">为什么选择从静态网站开始学习</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第2章：域名注册和选择 -->
+            <section id="chapter2" class="chapter-section">
+                <h2 class="chapter-title">第2章：域名注册和选择</h2>
+                <div class="chapter-content">
+                    <p>域名是你的网站在互联网上的地址，选择一个合适的域名对网站的成功至关重要。本章将详细介绍域名的选择原则和注册流程。</p>
+
+                    <h3>什么是域名？</h3>
+                    <p>域名是网站的唯一标识符，由多个部分组成：</p>
+                    <ul>
+                        <li><strong>顶级域（TLD）</strong>：如 .com、.net、.org、.cn 等</li>
+                        <li><strong>二级域</strong>：你想要注册的名称</li>
+                        <li><strong>子域</strong>：如 www、blog、shop 等</li>
+                    </ul>
+
+                    <h3>选择域名的原则</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">简洁易记</div>
+                                <div class="step-description">选择简短、容易拼写和记忆的域名，避免复杂的拼写和特殊字符。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">相关性</div>
+                                <div class="step-description">域名应该与你的网站内容或品牌相关，让用户一看就知道你的网站主题。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">避免侵权</div>
+                                <div class="step-description">不要使用受商标保护的名称，避免法律纠纷。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">考虑SEO</div>
+                                <div class="step-description">如果可能，在域名中包含关键词，有助于搜索引擎优化。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>常见域名后缀选择</h3>
+                    <div class="grid md:grid-cols-2 gap-4 my-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">通用顶级域</h4>
+                            <ul class="text-sm text-blue-700">
+                                <li>• .com - 商业网站，最受欢迎</li>
+                                <li>• .net - 网络服务</li>
+                                <li>• .org - 非营利组织</li>
+                                <li>• .info - 信息类网站</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">国家顶级域</h4>
+                            <ul class="text-sm text-green-700">
+                                <li>• .cn - 中国</li>
+                                <li>• .com.cn - 中国商业网站</li>
+                                <li>• .net.cn - 中国网络服务</li>
+                                <li>• .org.cn - 中国非营利组织</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>域名注册流程</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">选择注册商</div>
+                                <div class="step-description">选择信誉良好的域名注册商，如阿里云、腾讯云、GoDaddy、Namecheap等。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">查询域名</div>
+                                <div class="step-description">在注册商网站上搜索你想要的域名，查看是否可用。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">添加到购物车</div>
+                                <div class="step-description">选择可用的域名，添加到购物车。可以考虑注册多个相关域名。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">完成注册</div>
+                                <div class="step-description">填写注册信息，选择注册年限，完成付款。提供准确的联系信息很重要。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="https://kimi-web-img.moonshot.cn/img/raw.githubusercontent.com/d0e2223aed4400c518084d999d1e181514d76e27.png" alt="域名注册界面示例">
+                        <div class="screenshot-caption">域名注册界面示例</div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">重要提醒</div>
+                        <div class="warning-content">
+                            域名注册后需要实名认证才能使用。根据中国法律法规，所有.cn域名和部分其他域名都需要完成实名认证。请准备好相关证件信息。
+                        </div>
+                    </div>
+
+                    <h3>域名管理基础</h3>
+                    <p>注册域名后，你需要了解以下管理功能：</p>
+                    <ul>
+                        <li><strong>DNS管理</strong>：设置域名解析，将域名指向你的服务器</li>
+                        <li><strong>续费管理</strong>：设置自动续费，避免域名过期</li>
+                        <li><strong>联系信息更新</strong>：保持WHOIS信息准确</li>
+                        <li><strong>域名转移</strong>：如需更换注册商时的操作</li>
+                    </ul>
+
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该能够：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="domain1" name="domain1">
+                            <label for="domain1">理解域名的组成和作用</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="domain2" name="domain2">
+                            <label for="domain2">掌握选择域名的原则</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="domain3" name="domain3">
+                            <label for="domain3">了解不同域名后缀的区别</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="domain4" name="domain4">
+                            <label for="domain4">熟悉域名注册流程</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="domain5" name="domain5">
+                            <label for="domain5">了解域名管理的基本操作</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第3章：网站托管服务选择 -->
+            <section id="chapter3" class="chapter-section">
+                <h2 class="chapter-title">第3章：网站托管服务选择</h2>
+                <div class="chapter-content">
+                    <p>网站托管是将你的网站文件存储在服务器上，使其能够通过互联网访问。选择合适的托管服务对网站的性能、稳定性和安全性都有重要影响。</p>
+
+                    <h3>什么是网站托管？</h3>
+                    <p>网站托管是指将网站文件存储在专门的服务器上，这些服务器24小时运行，确保你的网站随时可以被访问。托管服务商提供服务器空间、网络连接、技术支持等服务。</p>
+
+                    <h3>托管服务类型</h3>
+                    <div class="grid md:grid-cols-2 gap-4 my-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="font-semibold text-blue-800 mb-2">共享主机（Shared Hosting）</h4>
+                            <p class="text-sm text-blue-700 mb-2">多个网站共享同一台服务器资源</p>
+                            <ul class="text-sm text-blue-600">
+                                <li>✓ 价格便宜（月付20-100元）</li>
+                                <li>✓ 易于管理，适合初学者</li>
+                                <li>✗ 资源共享，性能有限</li>
+                                <li>✗ 安全性相对较低</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                            <h4 class="font-semibold text-green-800 mb-2">VPS主机</h4>
+                            <p class="text-sm text-green-700 mb-2">虚拟专用服务器，独立资源</p>
+                            <ul class="text-sm text-green-600">
+                                <li>✓ 性能稳定，资源独立</li>
+                                <li>✓ 可自定义配置</li>
+                                <li>✗ 价格较高（月付100-500元）</li>
+                                <li>✗ 需要一定技术基础</li>
+                            </ul>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="font-semibold text-purple-800 mb-2">云主机（Cloud Hosting）</h4>
+                            <p class="text-sm text-purple-700 mb-2">基于云计算的弹性托管</p>
+                            <ul class="text-sm text-purple-600">
+                                <li>✓ 弹性扩展，按需付费</li>
+                                <li>✓ 高可用性，故障转移</li>
+                                <li>✗ 配置相对复杂</li>
+                                <li>✗ 费用可能不稳定</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+                            <h4 class="font-semibold text-orange-800 mb-2">专用服务器</h4>
+                            <p class="text-sm text-orange-700 mb-2">整台服务器专用</p>
+                            <ul class="text-sm text-orange-600">
+                                <li>✓ 最高性能，完全控制</li>
+                                <li>✓ 最高安全性</li>
+                                <li>✗ 价格昂贵（月付500元起）</li>
+                                <li>✗ 需要专业维护</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>如何选择托管服务商</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">评估需求</div>
+                                <div class="step-description">确定网站类型、预期访问量、技术要求（如数据库、编程语言支持等）。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">比较价格</div>
+                                <div class="step-description">对比不同服务商的价格，注意隐藏费用和续费价格。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">查看评价</div>
+                                <div class="step-description">查看用户评价和专业评测，了解服务商的口碑。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">测试客服</div>
+                                <div class="step-description">联系客服测试响应速度和专业程度。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>推荐的托管服务商</h3>
+                    <div class="grid md:grid-cols-3 gap-4 my-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border">
+                            <h4 class="font-semibold text-gray-800 mb-2">阿里云</h4>
+                            <p class="text-sm text-gray-600 mb-2">国内知名云服务商</p>
+                            <ul class="text-sm text-gray-600">
+                                <li>• 国内访问速度快</li>
+                                <li>• 中文客服支持</li>
+                                <li>• 备案服务完善</li>
+                                <li>• 价格：月付30元起</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border">
+                            <h4 class="font-semibold text-gray-800 mb-2">腾讯云</h4>
+                            <p class="text-sm text-gray-600 mb-2">腾讯旗下云服务</p>
+                            <ul class="text-sm text-gray-600">
+                                <li>• 稳定可靠</li>
+                                <li>• 生态丰富</li>
+                                <li>• 技术支持好</li>
+                                <li>• 价格：月付25元起</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border">
+                            <h4 class="font-semibold text-gray-800 mb-2">Bluehost</h4>
+                            <p class="text-sm text-gray-600 mb-2">国际知名主机商</p>
+                            <ul class="text-sm text-gray-600">
+                                <li>• WordPress官方推荐</li>
+                                <li>• 24/7客服支持</li>
+                                <li>• 免费域名</li>
+                                <li>• 价格：月付$2.95起</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>购买和配置流程</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">选择套餐</div>
+                                <div class="step-description">根据需求选择合适的托管套餐，初学者建议从基础共享主机开始。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">注册账户</div>
+                                <div class="step-description">在服务商网站注册账户，填写个人信息。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">选择域名</div>
+                                <div class="step-description">可以使用服务商提供的免费域名，或使用已有域名。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">完成支付</div>
+                                <div class="step-description">选择付款周期，完成支付。建议先选择较短的周期试用。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <div class="step-title">配置环境</div>
+                                <div class="step-description">登录控制面板，配置网站环境，设置FTP账户等。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="https://kimi-web-img.moonshot.cn/img/cdn.indiabioscience.org/bc7059016cbe7bd4da7241bb46e91dfcd75feb91.png" alt="主机控制面板示例">
+                        <div class="screenshot-caption">cPanel主机控制面板示例</div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="tip-title">省钱技巧</div>
+                        <div class="tip-content">
+                            很多主机商提供新用户优惠，首年价格较低。建议先选择一年期套餐试用，满意后再考虑长期套餐。同时关注节假日促销活动，通常能获得更好的价格。
+                        </div>
+                    </div>
+
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该能够：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hosting1" name="hosting1">
+                            <label for="hosting1">理解不同托管类型的区别</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hosting2" name="hosting2">
+                            <label for="hosting2">根据需求选择合适的托管方案</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hosting3" name="hosting3">
+                            <label for="hosting3">了解主流托管服务商的特点</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="hosting4" name="hosting4">
+                            <label for="hosting4">掌握托管购买和配置流程</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第4章：HTML基础入门 -->
+            <section id="chapter4" class="chapter-section">
+                <h2 class="chapter-title">第4章：HTML基础入门</h2>
+                <div class="chapter-content">
+                    <p>HTML（HyperText Markup Language）是构建网页的基础语言。本章将介绍HTML的基本概念和常用标签，帮助你创建第一个网页。</p>
+
+                    <h3>什么是HTML？</h3>
+                    <p>HTML是一种标记语言，用于描述网页的结构和内容。它使用各种标签（tags）来定义文本、图片、链接等元素。</p>
+
+                    <h3>HTML基本结构</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">基本HTML结构</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;我的第一个网页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;欢迎来到我的网站&lt;/h1&gt;
+    &lt;p&gt;这是我的第一个网页！&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>常用HTML标签</h3>
+                    <div class="grid md:grid-cols-2 gap-4 my-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">文本标签</h4>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li><code>&lt;h1&gt;-&lt;h6&gt;</code> - 标题标签</li>
+                                <li><code>&lt;p&gt;</code> - 段落标签</li>
+                                <li><code>&lt;br&gt;</code> - 换行标签</li>
+                                <li><code>&lt;strong&gt;</code> - 加粗文本</li>
+                                <li><code>&lt;em&gt;</code> - 斜体文本</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">结构标签</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li><code>&lt;div&gt;</code> - 区块容器</li>
+                                <li><code>&lt;span&gt;</code> - 行内容器</li>
+                                <li><code>&lt;header&gt;</code> - 页面头部</li>
+                                <li><code>&lt;nav&gt;</code> - 导航栏</li>
+                                <li><code>&lt;footer&gt;</code> - 页面底部</li>
+                            </ul>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-800 mb-2">媒体标签</h4>
+                            <ul class="text-sm text-purple-700 space-y-1">
+                                <li><code>&lt;img&gt;</code> - 图片标签</li>
+                                <li><code>&lt;video&gt;</code> - 视频标签</li>
+                                <li><code>&lt;audio&gt;</code> - 音频标签</li>
+                                <li><code>&lt;iframe&gt;</code> - 内嵌框架</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-800 mb-2">链接标签</h4>
+                            <ul class="text-sm text-orange-700 space-y-1">
+                                <li><code>&lt;a&gt;</code> - 超链接</li>
+                                <li><code>&lt;link&gt;</code> - 外部资源链接</li>
+                                <li><code>&lt;button&gt;</code> - 按钮</li>
+                                <li><code>&lt;form&gt;</code> - 表单</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>创建你的第一个网页</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">创建HTML文件</div>
+                                <div class="step-description">在电脑上创建一个新文件，命名为 index.html</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">编写HTML代码</div>
+                                <div class="step-description">使用文本编辑器（如VS Code、Notepad++）编写HTML代码</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">保存文件</div>
+                                <div class="step-description">保存文件时确保扩展名为 .html</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">在浏览器中查看</div>
+                                <div class="step-description">双击HTML文件，在浏览器中查看效果</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>HTML页面示例</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">完整的HTML页面示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;我的个人网站&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        nav {
+            background-color: #444;
+            padding: 0.5rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        main {
+            padding: 2rem;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;header&gt;
+            &lt;h1&gt;欢迎来到我的网站&lt;/h1&gt;
+            &lt;p&gt;这里是网站的标语&lt;/p&gt;
+        &lt;/header&gt;
+        
+        &lt;nav&gt;
+            &lt;a href="#home"&gt;首页&lt;/a&gt;
+            &lt;a href="#about"&gt;关于&lt;/a&gt;
+            &lt;a href="#services"&gt;服务&lt;/a&gt;
+            &lt;a href="#contact"&gt;联系&lt;/a&gt;
+        &lt;/nav&gt;
+        
+        &lt;main&gt;
+            &lt;h2&gt;关于我&lt;/h2&gt;
+            &lt;p&gt;这里是关于我的介绍内容。可以写一些个人简介、专业背景等信息。&lt;/p&gt;
+            
+            &lt;h2&gt;我的服务&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;li&gt;网站开发&lt;/li&gt;
+                &lt;li&gt;网页设计&lt;/li&gt;
+                &lt;li&gt;技术咨询&lt;/li&gt;
+            &lt;/ul&gt;
+            
+            &lt;h2&gt;联系我&lt;/h2&gt;
+            &lt;p&gt;邮箱：example@email.com&lt;/p&gt;
+            &lt;p&gt;电话：123-456-7890&lt;/p&gt;
+        &lt;/main&gt;
+        
+        &lt;footer&gt;
+            &lt;p&gt;&amp;copy; 2024 我的个人网站. 保留所有权利.&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="tip-title">学习建议</div>
+                        <div class="tip-content">
+                            学习HTML最好的方法是多练习。尝试修改上面的示例代码，添加自己的内容，看看效果如何变化。记住，HTML主要负责内容结构，样式应该由CSS来处理。
+                        </div>
+                    </div>
+
+                    <h3>HTML最佳实践</h3>
+                    <ul>
+                        <li><strong>语义化标签</strong>：使用有意义的标签，如 &lt;header&gt;、&lt;nav&gt;、&lt;main&gt;、&lt;footer&gt;</li>
+                        <li><strong>正确的嵌套</strong>：确保标签正确嵌套，不要交叉</li>
+                        <li><strong>注释代码</strong>：适当添加注释，便于维护</li>
+                        <li><strong>验证HTML</strong>：使用W3C验证工具检查代码错误</li>
+                        <li><strong>响应式设计</strong>：使用viewport标签支持移动设备</li>
+                    </ul>
+
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该能够：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="html1" name="html1">
+                            <label for="html1">理解HTML的基本概念和作用</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="html2" name="html2">
+                            <label for="html2">掌握HTML基本结构和常用标签</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="html3" name="html3">
+                            <label for="html3">能够创建简单的HTML页面</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="html4" name="html4">
+                            <label for="html4">了解HTML最佳实践</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第5章：CSS样式设计 -->
+            <section id="chapter5" class="chapter-section">
+                <h2 class="chapter-title">第5章：CSS样式设计</h2>
+                <div class="chapter-content">
+                    <p>CSS (Cascading Style Sheets) 是用于控制网页外观和布局的样式表语言。通过CSS，你可以让网页变得美观、专业，并适应不同的设备。</p>
+
+                    <h3>CSS基础概念</h3>
+                    <p>CSS通过选择器来选中HTML元素，然后应用样式规则。每个CSS规则由选择器和声明块组成：</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">CSS基本语法</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-css">/* 选择器 { 属性: 值; } */
+h1 {
+    color: blue;
+    font-size: 24px;
+    margin-bottom: 20px;
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>CSS选择器</h3>
+                    <div class="grid md:grid-cols-2 gap-4 my-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">基本选择器</h4>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li><code>*</code> - 通用选择器</li>
+                                <li><code>element</code> - 元素选择器</li>
+                                <li><code>.class</code> - 类选择器</li>
+                                <li><code>#id</code> - ID选择器</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">组合选择器</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li><code>div, p</code> - 分组选择器</li>
+                                <li><code>div p</code> - 后代选择器</li>
+                                <li><code>div > p</code> - 子选择器</li>
+                                <li><code>div + p</code> - 相邻兄弟选择器</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>CSS布局技术</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">盒模型 (Box Model)</div>
+                                <div class="step-description">理解CSS盒模型是掌握布局的基础，包括内容(content)、内边距(padding)、边框(border)和外边距(margin)。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Flexbox布局</div>
+                                <div class="step-description">Flexbox是一维布局模型，适合用于组件和小型布局，提供了灵活的空间分配方式。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Grid布局</div>
+                                <div class="step-description">CSS Grid是二维布局系统，适合用于页面整体布局，可以创建复杂的网格结构。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">响应式设计</div>
+                                <div class="step-description">使用媒体查询(@media)创建响应式设计，让网站在不同设备上都能良好显示。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Flexbox布局示例</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Flexbox导航栏示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-css">.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #333;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Grid布局示例</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Grid网格布局示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-css">.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.grid-item {
+    background-color: #f8fafc;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>响应式设计示例</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">响应式媒体查询</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-css">/* 桌面设备 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* 平板设备 */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* 手机设备 */
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+    
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="tip-title">CSS最佳实践</div>
+                        <div class="tip-content">
+                            1. 使用语义化的类名<br>
+                            2. 避免使用!important<br>
+                            3. 使用CSS变量管理颜色和尺寸<br>
+                            4. 合理使用CSS预处理器<br>
+                            5. 优化CSS选择器性能
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="resources/responsive-showcase.jpg" alt="响应式设计示例">
+                        <div class="screenshot-caption">响应式设计在不同设备上的显示效果</div>
+                    </div>
+
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该能够：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="css1" name="css1">
+                            <label for="css1">理解CSS盒模型概念</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="css2" name="css2">
+                            <label for="css2">掌握CSS选择器的使用</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="css3" name="css3">
+                            <label for="css3">使用Flexbox创建灵活布局</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="css4" name="css4">
+                            <label for="css4">使用Grid创建网格布局</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="css5" name="css5">
+                            <label for="css5">创建响应式设计</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第6章：网站文件准备 -->
+            <section id="chapter6" class="chapter-section">
+                <h2 class="chapter-title">第6章：网站文件准备</h2>
+                <div class="chapter-content">
+                    <p>在将网站上传到服务器之前，需要正确组织和管理网站文件。本章将介绍如何准备和优化网站文件。</p>
+
+                    <h3>网站文件结构</h3>
+                    <p>一个良好的文件结构有助于网站的维护和扩展。推荐的文件结构如下：</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">推荐的网站文件结构</span>
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        </div>
+                        <div class="code-content">
+                            <pre><code class="language-text">my-website/
+├── index.html              # 主页
+├── about.html              # 关于页面
+├── contact.html            # 联系页面
+├── main.js                 # 主要JavaScript文件
+├── resources/              # 资源文件夹
+│   ├── images/            # 图片文件
+│   │   ├── logo.png
+│   │   ├── banner.jpg
+│   │   └── gallery/
+│   ├── css/               # CSS文件
+│   │   └── styles.css
+│   └── js/                # JavaScript文件
+│       └── scripts.js
+└── README.md              # 项目说明</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>文件优化技巧</h3>
+                    <div class="step-by-step">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">图片优化</div>
+                                <div class="step-description">压缩图片文件大小，使用适当的格式（WebP、JPEG、PNG），并设置正确的尺寸。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">CSS和JS压缩</div>
+                                <div class="step-description">使用工具压缩CSS和JavaScript文件，移除不必要的空格和注释。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">文件命名规范</div>
+                                <div class="step-description">使用有意义的文件名，避免中文和特殊字符，使用小写字母和连字符。</div>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-title">版本控制</div>
+                                <div class="step-description">使用Git等版本控制系统管理代码，便于协作和版本回退。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>网站性能优化</h3>
+                    <div class="grid md:grid-cols-2 gap-4 my-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">加载优化</h4>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li>• 压缩HTML、CSS、JS文件</li>
+                                <li>• 优化图片大小和格式</li>
+                                <li>• 启用浏览器缓存</li>
+                                <li>• 使用CDN加速</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">渲染优化</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• 减少HTTP请求数</li>
+                                <li>• 异步加载JavaScript</li>
+                                <li>• 优化CSS选择器</li>
+                                <li>• 避免阻塞渲染</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">重要提醒</div>
+                        <div class="warning-content">
+                            在部署网站前，务必检查所有文件链接是否正确，图片是否能正常显示，以及网站在不同浏览器中的兼容性。
+                        </div>
+                    </div>
+
+                    <div class="checklist">
+                        <div class="checklist-title">完成本章学习后，你应该能够：</div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="files1" name="files1">
+                            <label for="files1">组织良好的网站文件结构</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="files2" name="files2">
+                            <label for="files2">优化图片和其他资源文件</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="files3" name="files3">
+                            <label for="files3">压缩和优化代码文件</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="files4" name="files4">
+                            <label for="files4">使用版本控制系统</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 交互式代码实验室 -->
+            <section class="chapter-section bg-gradient-to-r from-blue-50 to-indigo-50">
+                <h2 class="chapter-title">💻 交互式代码实验室</h2>
+                <div class="chapter-content">
+                    <p>在这里你可以实际编写和测试代码，立即看到效果。这是一个安全的环境，让你自由实验和练习。</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mt-8">
+                        <div class="bg-white rounded-lg p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4">HTML编辑器</h3>
+                            <div class="code-editor">
+                                <textarea id="htmlLab" class="code-input" placeholder="在这里输入HTML代码..."><!DOCTYPE html>
+<html>
+<head>
+    <title>我的第一个网页</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p>这是我的第一个网页。</p>
+</body>
+</html></textarea>
+                            </div>
+                            <button onclick="runHTMLLab()" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                运行代码
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4">预览结果</h3>
+                            <div class="code-output border-2 border-gray-200 rounded-lg" style="height: 300px;">
+                                <iframe id="htmlOutput" class="w-full h-full border-0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-yellow-400">💡</span>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-yellow-800">学习提示</h4>
+                                <p class="mt-1 text-sm text-yellow-700">
+                                    尝试修改上面的HTML代码，然后点击"运行代码"按钮查看效果。你可以添加更多元素，比如图片、链接、列表等。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 实用技巧和建议 -->
+            <section class="chapter-section bg-gradient-to-r from-green-50 to-emerald-50">
+                <h2 class="chapter-title">🎯 实用技巧和建议</h2>
+                <div class="chapter-content">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4 text-green-800">✅ 最佳实践</h3>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <span>使用语义化的HTML标签，提高可访问性</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <span>为所有图片添加alt属性，改善SEO和无障碍体验</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <span>保持代码整洁，使用适当的缩进和注释</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <span>测试网站在不同浏览器和设备上的兼容性</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <span>优化图片大小和格式，提高网站加载速度</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4 text-red-800">❌ 常见错误</h3>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <span>忘记关闭HTML标签，导致页面结构混乱</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <span>使用过时的HTML标签和属性</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <span>忽略移动设备的响应式设计</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <span>使用中文或特殊字符命名文件和文件夹</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <span>不考虑网站的可访问性和SEO优化</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 导航按钮 -->
+            <div class="navigation-buttons">
+                <a href="#" class="nav-btn nav-btn-prev" onclick="goToPreviousChapter()">
+                    <svg class="nav-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    上一章
+                </a>
+                <div class="text-center text-gray-600">
+                    <span id="chapter-progress">第 1 章，共 10 章</span>
+                </div>
+                <a href="#" class="nav-btn nav-btn-next" onclick="goToNextChapter()">
+                    下一章
+                    <svg class="nav-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+    <script>
+        // 教程页面特定的JavaScript
+        let currentChapter = 1;
+        const totalChapters = 6;
+
+        // 复制代码功能
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block').querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '已复制!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // 章节导航
+        function goToChapter(chapterNum) {
+            if (chapterNum < 1 || chapterNum > totalChapters) return;
+            
+            // 更新当前章节
+            currentChapter = chapterNum;
+            
+            // 更新导航状态
+            document.querySelectorAll('.chapter-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-chapter="${chapterNum}"]`).classList.add('active');
+            
+            // 滚动到对应章节
+            const chapterSection = document.getElementById(`chapter${chapterNum}`);
+            if (chapterSection) {
+                chapterSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // 更新进度
+            updateProgress();
+        }
+
+        function goToPreviousChapter() {
+            if (currentChapter > 1) {
+                goToChapter(currentChapter - 1);
+            }
+        }
+
+        function goToNextChapter() {
+            if (currentChapter < totalChapters) {
+                goToChapter(currentChapter + 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentChapter / totalChapters) * 100;
+            document.querySelector('.progress-fill').style.width = `${progress}%`;
+            document.querySelector('#chapter-progress').textContent = `第 ${currentChapter} 章，共 ${totalChapters} 章`;
+        }
+
+        // 检查清单状态保存
+        function saveChecklistState() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            const state = {};
+            
+            checkboxes.forEach(checkbox => {
+                state[checkbox.id] = checkbox.checked;
+            });
+            
+            localStorage.setItem('tutorial-checklist', JSON.stringify(state));
+        }
+
+        function loadChecklistState() {
+            const saved = localStorage.getItem('tutorial-checklist');
+            if (saved) {
+                const state = JSON.parse(saved);
+                
+                Object.keys(state).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = state[id];
+                        if (state[id]) {
+                            checkbox.closest('.checklist-item').classList.add('completed');
+                        }
+                    }
+                });
+            }
+        }
+
+        // 绑定检查清单事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载检查清单状态
+            loadChecklistState();
+            
+            // 绑定检查清单事件
+            document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checklist-item');
+                    if (this.checked) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                    saveChecklistState();
+                });
+            });
+            
+            // 绑定章节链接事件
+            document.querySelectorAll('.chapter-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const chapterNum = parseInt(this.dataset.chapter);
+                    goToChapter(chapterNum);
+                });
+            });
+            
+            // 初始化进度
+            updateProgress();
+        });
+
+        // 交互式代码实验室
+        function runHTMLLab() {
+            const htmlCode = document.getElementById('htmlLab').value;
+            const outputFrame = document.getElementById('htmlOutput');
+            
+            const iframeDoc = outputFrame.contentDocument || outputFrame.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(htmlCode);
+            iframeDoc.close();
+            
+            // 显示成功消息
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-green-500 text-white p-3 rounded-md z-50';
+            notification.textContent = '代码运行成功！';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // 滚动监听，更新当前章节
+        window.addEventListener('scroll', function() {
+            const chapters = document.querySelectorAll('.chapter-section');
+            const scrollPos = window.scrollY + 100;
+            
+            chapters.forEach((chapter, index) => {
+                const chapterTop = chapter.offsetTop;
+                const chapterHeight = chapter.offsetHeight;
+                
+                if (scrollPos >= chapterTop && scrollPos < chapterTop + chapterHeight) {
+                    const newChapter = index + 1;
+                    if (newChapter !== currentChapter) {
+                        currentChapter = newChapter;
+                        
+                        // 更新导航状态
+                        document.querySelectorAll('.chapter-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        document.querySelector(`[data-chapter="${currentChapter}"]`).classList.add('active');
+                        
+                        updateProgress();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具资源 - 网站发布实用工具</title>
+    <meta name="description" content="网站发布过程中需要的各种实用工具，包括域名搜索、代码验证、性能测试等。">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-orange: #f59e0b;
+            --bg-gray: #f8fafc;
+            --text-dark: #1f2937;
+        }
+        
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .font-serif {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .domain-result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .domain-result.available {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .domain-result.unavailable {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .domain-result:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .code-editor {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .code-input {
+            background: transparent;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            resize: vertical;
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 1rem;
+            min-height: 200px;
+        }
+        
+        .code-output {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            min-height: 200px;
+            padding: 1rem;
+        }
+        
+        .website-builder {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .builder-steps {
+            display: flex;
+            background: #f8fafc;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+        
+        .step-number {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            color: #6b7280;
+        }
+        
+        .step-number.active {
+            background: var(--secondary-blue);
+            color: white;
+        }
+        
+        .step-number.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .builder-content {
+            padding: 2rem;
+        }
+        
+        .step-content {
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+        }
+        
+        .website-preview {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            min-height: 400px;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .preview-header {
+            padding: 1rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .preview-nav {
+            background: #f8fafc;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .preview-nav a {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .preview-nav a:hover {
+            background: #e5e7eb;
+        }
+        
+        .preview-main {
+            padding: 2rem;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value.good {
+            color: #10b981;
+        }
+        
+        .metric-value.average {
+            color: #f59e0b;
+        }
+        
+        .metric-value.poor {
+            color: #ef4444;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .resource-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resource-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-serif font-bold text-gray-900">网站发布教程</h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">首页</a>
+                        <a href="tutorial.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">详细教程</a>
+                        <a href="#" class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">工具资源</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-20 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 页面标题 -->
+            <div class="text-center mb-12 animate-on-scroll">
+                <h1 class="text-4xl font-serif font-bold text-gray-900 mb-4">工具资源</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    网站发布过程中需要的各种实用工具和在线服务，帮助你更高效地完成网站开发和部署
+                </p>
+            </div>
+
+            <!-- 域名搜索工具 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">域名搜索工具</h2>
+                <p class="text-gray-600 mb-6">输入你想要的域名，检查可用性并查看不同后缀的价格对比</p>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <input 
+                            type="text" 
+                            id="domainSearchInput" 
+                            placeholder="输入你想要的域名 (例如: mywebsite)" 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                        <button 
+                            id="domainSearchBtn" 
+                            class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                        >
+                            搜索域名
+                        </button>
+                    </div>
+                    
+                    <div id="domainSearchResults" class="space-y-2">
+                        <div class="text-center text-gray-500 py-8">
+                            <p>输入域名后点击搜索按钮查看结果</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 网站构建器 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">网站构建器向导</h2>
+                <p class="text-gray-600 mb-6">通过简单的步骤创建你的网站基础结构和样式</p>
+                
+                <div class="website-builder">
+                    <div class="builder-steps">
+                        <div class="step-indicator">
+                            <div class="step-number active" data-step="1">1</div>
+                            <span>基本信息</span>
+                        </div>
+                        <div class="step-indicator">
+                            <div class="step-number" data-step="2">2</div>
+                            <span>网站类型</span>
+                        </div>
+                        <div class="step-indicator">
+                            <div class="step-number" data-step="3">3</div>
+                            <span>样式设置</span>
+                        </div>
+                        <div class="step-indicator">
+                            <div class="step-number" data-step="4">4</div>
+                            <span>生成代码</span>
+                        </div>
+                    </div>
+                    
+                    <div class="builder-content">
+                        <!-- 步骤1: 基本信息 -->
+                        <div class="step-content active" id="step1">
+                            <h3 class="text-xl font-semibold mb-4">网站基本信息</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">网站名称</label>
+                                    <input type="text" id="siteName" placeholder="输入你的网站名称" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">网站描述</label>
+                                    <input type="text" id="siteDescription" placeholder="简短描述你的网站" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">作者名称</label>
+                                    <input type="text" id="authorName" placeholder="你的名字或团队名称" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">联系邮箱</label>
+                                    <input type="email" id="contactEmail" placeholder="your@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-6">
+                                <button onclick="nextStep()" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 步骤2: 网站类型 -->
+                        <div class="step-content" id="step2">
+                            <h3 class="text-xl font-semibold mb-4">选择网站类型</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="site-type-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors" data-type="personal">
+                                    <div class="text-3xl mb-2">👤</div>
+                                    <h4 class="font-semibold">个人网站</h4>
+                                    <p class="text-sm text-gray-600">个人博客、简历、作品集</p>
+                                </div>
+                                <div class="site-type-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors" data-type="business">
+                                    <div class="text-3xl mb-2">🏢</div>
+                                    <h4 class="font-semibold">商业网站</h4>
+                                    <p class="text-sm text-gray-600">公司官网、产品展示</p>
+                                </div>
+                                <div class="site-type-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors" data-type="portfolio">
+                                    <div class="text-3xl mb-2">🎨</div>
+                                    <h4 class="font-semibold">作品集</h4>
+                                    <p class="text-sm text-gray-600">设计师、摄影师作品集</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-6">
+                                <button onclick="prevStep()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                                    上一步
+                                </button>
+                                <button onclick="nextStep()" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                    下一步
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 步骤3: 样式设置 -->
+                        <div class="step-content" id="step3">
+                            <h3 class="text-xl font-semibold mb-4">设置网站样式</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">主题颜色</label>
+                                    <div class="flex gap-2 mb-4">
+                                        <div class="color-option w-8 h-8 rounded-full bg-blue-500 cursor-pointer border-2 border-transparent hover:border-gray-400" data-color="#3b82f6"></div>
+                                        <div class="color-option w-8 h-8 rounded-full bg-green-500 cursor-pointer border-2 border-transparent hover:border-gray-400" data-color="#10b981"></div>
+                                        <div class="color-option w-8 h-8 rounded-full bg-purple-500 cursor-pointer border-2 border-transparent hover:border-gray-400" data-color="#8b5cf6"></div>
+                                        <div class="color-option w-8 h-8 rounded-full bg-red-500 cursor-pointer border-2 border-transparent hover:border-gray-400" data-color="#ef4444"></div>
+                                        <div class="color-option w-8 h-8 rounded-full bg-orange-500 cursor-pointer border-2 border-transparent hover:border-gray-400" data-color="#f59e0b"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">布局风格</label>
+                                    <select id="layoutStyle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                        <option value="modern">现代简约</option>
+                                        <option value="classic">经典传统</option>
+                                        <option value="creative">创意设计</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-6">
+                                <button onclick="prevStep()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                                    上一步
+                                </button>
+                                <button onclick="nextStep()" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                    生成网站
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 步骤4: 生成代码 -->
+                        <div class="step-content" id="step4">
+                            <h3 class="text-xl font-semibold mb-4">生成的网站代码</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold mb-2">HTML代码</h4>
+                                    <div class="code-editor">
+                                        <textarea id="generatedHTML" class="code-input" readonly></textarea>
+                                    </div>
+                                    <button onclick="copyGeneratedCode('html')" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                        复制HTML代码
+                                    </button>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold mb-2">预览效果</h4>
+                                    <div class="website-preview">
+                                        <iframe id="previewFrame" class="w-full h-96 border-0"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-6">
+                                <button onclick="prevStep()" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                                    上一步
+                                </button>
+                                <button onclick="downloadGeneratedCode()" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                                    下载网站文件
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 代码验证工具 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">代码验证工具</h2>
+                <p class="text-gray-600 mb-6">检查你的HTML和CSS代码是否符合标准，发现潜在问题</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">HTML验证</h3>
+                        <div class="code-editor">
+                            <textarea id="htmlCode" class="code-input" placeholder="在此输入你的HTML代码..."></textarea>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="validateHTML()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                验证HTML
+                            </button>
+                            <button onclick="clearHTML()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                                清空
+                            </button>
+                        </div>
+                        <div id="htmlValidationResult" class="mt-4 p-3 rounded-md" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">CSS验证</h3>
+                        <div class="code-editor">
+                            <textarea id="cssCode" class="code-input" placeholder="在此输入你的CSS代码..."></textarea>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="validateCSS()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                                验证CSS
+                            </button>
+                            <button onclick="clearCSS()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                                清空
+                            </button>
+                        </div>
+                        <div id="cssValidationResult" class="mt-4 p-3 rounded-md" style="display: none;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 性能测试工具 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">网站性能测试</h2>
+                <p class="text-gray-600 mb-6">测试你的网站加载速度和性能指标</p>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <input 
+                            type="url" 
+                            id="performanceURL" 
+                            placeholder="输入你的网站URL (例如: https://example.com)" 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                        <button 
+                            onclick="testPerformance()" 
+                            class="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                        >
+                            测试性能
+                        </button>
+                    </div>
+                    
+                    <div id="performanceResults" class="performance-metrics" style="display: none;">
+                        <div class="metric-card">
+                            <div class="metric-value good" id="loadTime">--</div>
+                            <div class="text-sm text-gray-600">加载时间 (秒)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value good" id="pageSize">--</div>
+                            <div class="text-sm text-gray-600">页面大小 (MB)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value average" id="requests">--</div>
+                            <div class="text-sm text-gray-600">HTTP请求数</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value good" id="performanceScore">--</div>
+                            <div class="text-sm text-gray-600">性能评分</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 推荐资源 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">推荐资源</h2>
+                <p class="text-gray-600 mb-6">网站开发和发布过程中常用的工具和服务推荐</p>
+                
+                <div class="resource-grid">
+                    <div class="resource-item">
+                        <div class="resource-icon bg-blue-100 text-blue-600">🌐</div>
+                        <h3 class="text-lg font-semibold mb-2">域名注册</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">阿里云域名</a> - 国内首选，价格实惠</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">腾讯云域名</a> - 稳定可靠，服务完善</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">GoDaddy</a> - 国际知名，选择丰富</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-item">
+                        <div class="resource-icon bg-green-100 text-green-600">☁️</div>
+                        <h3 class="text-lg font-semibold mb-2">网站托管</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">阿里云主机</a> - 国内访问速度快</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">腾讯云主机</a> - 稳定可靠，技术支持好</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Bluehost</a> - WordPress官方推荐</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-item">
+                        <div class="resource-icon bg-purple-100 text-purple-600">💻</div>
+                        <h3 class="text-lg font-semibold mb-2">开发工具</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">VS Code</a> - 免费强大的代码编辑器</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">GitHub</a> - 代码托管和版本控制</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Figma</a> - 在线设计工具</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-item">
+                        <div class="resource-icon bg-orange-100 text-orange-600">🔧</div>
+                        <h3 class="text-lg font-semibold mb-2">在线工具</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Canva</a> - 在线图形设计</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">TinyPNG</a> - 图片压缩优化</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Google Fonts</a> - 免费字体库</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-item">
+                        <div class="resource-icon bg-red-100 text-red-600">📊</div>
+                        <h3 class="text-lg font-semibold mb-2">分析工具</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Google Analytics</a> - 网站流量分析</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Google Search Console</a> - 搜索优化</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">百度统计</a> - 中文网站分析</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-item">
+                        <div class="resource-icon bg-indigo-100 text-indigo-600">🔒</div>
+                        <h3 class="text-lg font-semibold mb-2">安全工具</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Let's Encrypt</a> - 免费SSL证书</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Cloudflare</a> - CDN和安全防护</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Sucuri</a> - 网站安全扫描</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 学习资源 -->
+            <section class="tool-section animate-on-scroll">
+                <h2 class="text-2xl font-serif font-bold text-gray-900 mb-6">学习资源</h2>
+                <p class="text-gray-600 mb-6">深入学习网站开发和发布的优质资源</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">📚 在线教程</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">MDN Web文档</a> - 最权威的Web技术文档</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">W3School</a> - 初学者友好的Web教程</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">freeCodeCamp</a> - 免费编程课程</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Codecademy</a> - 交互式编程学习</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">🎥 视频教程</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">YouTube Web开发频道</a> - 丰富的免费视频教程</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">慕课网</a> - 中文IT技能学习平台</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">极客时间</a> - 专业技术课程</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">B站Web开发</a> - 免费中文视频教程</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">📖 技术文档</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">HTML规范</a> - W3C官方HTML标准</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">CSS参考</a> - MDN CSS文档</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">JavaScript指南</a> - JavaScript完整教程</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Web API参考</a> - 浏览器API文档</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">💬 社区论坛</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• <a href="#" class="text-blue-600 hover:underline">Stack Overflow</a> - 程序员问答社区</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">GitHub Discussions</a> - 项目讨论区</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">掘金</a> - 中文技术社区</li>
+                            <li>• <a href="#" class="text-blue-600 hover:underline">CSDN</a> - 中文IT技术社区</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-serif font-bold mb-4">网站发布教程</h3>
+                <p class="text-gray-400 mb-6">让每个人都能轻松创建和发布自己的网站</p>
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="index.html" class="text-gray-400 hover:text-white transition-colors">首页</a>
+                    <a href="tutorial.html" class="text-gray-400 hover:text-white transition-colors">详细教程</a>
+                </div>
+                <div class="border-t border-gray-800 pt-8">
+                    <p class="text-gray-400 text-sm">© 2024 网站发布教程. 保留所有权利.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+    <script>
+        // 网站构建器相关变量
+        let currentStep = 1;
+        let websiteData = {};
+        
+        // 域名搜索功能
+        document.getElementById('domainSearchBtn').addEventListener('click', function() {
+            const domain = document.getElementById('domainSearchInput').value.trim();
+            if (!domain) return;
+
+            const resultsContainer = document.getElementById('domainSearchResults');
+            resultsContainer.innerHTML = '<div class="text-center text-gray-500 py-8">正在检查域名可用性...</div>';
+
+            // 模拟API调用
+            setTimeout(() => {
+                const results = generateDomainResults(domain);
+                displayDomainResults(results);
+            }, 1500);
+        });
+
+        function generateDomainResults(domain) {
+            const tlds = ['.com', '.net', '.org', '.cn', '.io', '.xyz', '.online'];
+            return tlds.map(tld => ({
+                domain: domain + tld,
+                available: Math.random() > 0.4,
+                price: Math.floor(Math.random() * 200) + 50,
+                premium: Math.random() > 0.8
+            }));
+        }
+
+        function displayDomainResults(results) {
+            const container = document.getElementById('domainSearchResults');
+            container.innerHTML = results.map(result => `
+                <div class="domain-result ${result.available ? 'available' : 'unavailable'}">
+                    <div class="flex items-center">
+                        <span class="font-semibold text-lg ${result.available ? 'text-green-600' : 'text-red-600'}">${result.domain}</span>
+                        ${result.premium ? '<span class="ml-2 px-2 py-1 bg-orange-100 text-orange-600 text-xs rounded-full">Premium</span>' : ''}
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm ${result.available ? 'text-green-600' : 'text-red-600'}">
+                            ${result.available ? '✅ 可用' : '❌ 已注册'}
+                        </span>
+                        ${result.available ? `
+                            <span class="text-lg font-semibold text-gray-700">¥${result.price}/年</span>
+                            <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors" onclick="alert('注册功能演示 - 实际使用时会跳转到注册页面')">
+                                立即注册
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 网站构建器功能
+        function nextStep() {
+            if (currentStep < 4) {
+                // 保存当前步骤数据
+                saveStepData();
+                
+                // 隐藏当前步骤
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('completed');
+                
+                // 显示下一步骤
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                
+                // 如果是最后一步，生成网站代码
+                if (currentStep === 4) {
+                    generateWebsiteCode();
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                // 隐藏当前步骤
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // 显示上一步骤
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('completed');
+            }
+        }
+
+        function saveStepData() {
+            if (currentStep === 1) {
+                websiteData.siteName = document.getElementById('siteName').value;
+                websiteData.siteDescription = document.getElementById('siteDescription').value;
+                websiteData.authorName = document.getElementById('authorName').value;
+                websiteData.contactEmail = document.getElementById('contactEmail').value;
+            } else if (currentStep === 2) {
+                const selectedType = document.querySelector('.site-type-option.selected');
+                if (selectedType) {
+                    websiteData.siteType = selectedType.dataset.type;
+                }
+            } else if (currentStep === 3) {
+                const selectedColor = document.querySelector('.color-option.selected');
+                if (selectedColor) {
+                    websiteData.primaryColor = selectedColor.dataset.color;
+                }
+                websiteData.layoutStyle = document.getElementById('layoutStyle').value;
+            }
+        }
+
+        // 网站类型选择
+        document.querySelectorAll('.site-type-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.site-type-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                this.style.borderColor = '#3b82f6';
+                this.style.backgroundColor = '#eff6ff';
+            });
+        });
+
+        // 颜色选择
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                this.style.borderColor = '#1f2937';
+            });
+        });
+
+        function generateWebsiteCode() {
+            const html = generateHTMLCode();
+            document.getElementById('generatedHTML').value = html;
+            
+            // 在iframe中显示预览
+            const iframe = document.getElementById('previewFrame');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(html);
+            iframeDoc.close();
+        }
+
+        function generateHTMLCode() {
+            const color = websiteData.primaryColor || '#3b82f6';
+            const siteName = websiteData.siteName || '我的网站';
+            const siteDescription = websiteData.siteDescription || '这是一个漂亮的网站';
+            const authorName = websiteData.authorName || '网站作者';
+            const contactEmail = websiteData.contactEmail || 'contact@example.com';
+
+            return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${siteName}</title>
+    <meta name="description" content="${siteDescription}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: ${color};
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        nav {
+            background: #f8fafc;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background: ${color};
+            color: white;
+        }
+        
+        main {
+            padding: 3rem 0;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .section p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature h3 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .feature p {
+            color: #6b7280;
+        }
+        
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .contact-info {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .contact-info h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info p {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>${siteName}</h1>
+            <p>${siteDescription}</p>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <section class="section">
+                <h2>欢迎来到${siteName}</h2>
+                <p>我们致力于为您提供最优质的服务和解决方案。无论您是个人用户还是企业客户，我们都能满足您的需求。</p>
+            </section>
+            
+            <section class="section">
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🚀</div>
+                        <h3>快速高效</h3>
+                        <p>采用最新技术，确保网站运行速度快，用户体验佳</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">📱</div>
+                        <h3>响应式设计</h3>
+                        <p>完美适配各种设备，无论是电脑、平板还是手机</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🔒</div>
+                        <h3>安全可靠</h3>
+                        <p>采用业界标准的安全措施，保护您的数据和隐私</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="contact-info">
+                    <h3>联系我们</h3>
+                    <p><strong>作者：</strong>${authorName}</p>
+                    <p><strong>邮箱：</strong>${contactEmail}</p>
+                    <p><strong>地址：</strong>中国上海市</p>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ${siteName}. 保留所有权利.</p>
+        </div>
+    </footer>
+</body>
+</html>`;
+        }
+
+        function copyGeneratedCode(type) {
+            const code = document.getElementById('generatedHTML').value;
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('代码已复制到剪贴板！', 'success');
+            });
+        }
+
+        function downloadGeneratedCode() {
+            const html = document.getElementById('generatedHTML').value;
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('网站文件已下载！', 'success');
+        }
+
+        // 代码验证功能
+        function validateHTML() {
+            const code = document.getElementById('htmlCode').value.trim();
+            const resultDiv = document.getElementById('htmlValidationResult');
+            
+            if (!code) {
+                showValidationResult(resultDiv, '请输入HTML代码', 'error');
+                return;
+            }
+            
+            // 简单的HTML验证
+            const hasDoctype = code.includes('<!DOCTYPE html>');
+            const hasHtmlTag = code.includes('<html') && code.includes('</html>');
+            const hasHeadTag = code.includes('<head>') && code.includes('</head>');
+            const hasBodyTag = code.includes('<body>') && code.includes('</body>');
+            
+            let message = 'HTML验证结果：\n';
+            let errors = [];
+            
+            if (!hasDoctype) errors.push('缺少 <!DOCTYPE html> 声明');
+            if (!hasHtmlTag) errors.push('缺少 <html> 标签');
+            if (!hasHeadTag) errors.push('缺少 <head> 标签');
+            if (!hasBodyTag) errors.push('缺少 <body> 标签');
+            
+            if (errors.length === 0) {
+                message += '✅ HTML结构正确！';
+                showValidationResult(resultDiv, message, 'success');
+            } else {
+                message += '❌ 发现以下问题：\n' + errors.join('\n');
+                showValidationResult(resultDiv, message, 'error');
+            }
+        }
+
+        function validateCSS() {
+            const code = document.getElementById('cssCode').value.trim();
+            const resultDiv = document.getElementById('cssValidationResult');
+            
+            if (!code) {
+                showValidationResult(resultDiv, '请输入CSS代码', 'error');
+                return;
+            }
+            
+            // 简单的CSS验证
+            const hasBraces = code.includes('{') && code.includes('}');
+            const hasSemicolon = code.includes(';');
+            
+            let message = 'CSS验证结果：\n';
+            
+            if (hasBraces && hasSemicolon) {
+                message += '✅ CSS格式正确！';
+                showValidationResult(resultDiv, message, 'success');
+            } else {
+                message += '❌ 请检查CSS语法格式';
+                showValidationResult(resultDiv, message, 'error');
+            }
+        }
+
+        function showValidationResult(element, message, type) {
+            element.style.display = 'block';
+            element.textContent = message;
+            element.className = `mt-4 p-3 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
+        }
+
+        function clearHTML() {
+            document.getElementById('htmlCode').value = '';
+            document.getElementById('htmlValidationResult').style.display = 'none';
+        }
+
+        function clearCSS() {
+            document.getElementById('cssCode').value = '';
+            document.getElementById('cssValidationResult').style.display = 'none';
+        }
+
+        // 性能测试功能
+        function testPerformance() {
+            const url = document.getElementById('performanceURL').value.trim();
+            if (!url) {
+                showNotification('请输入网站URL', 'error');
+                return;
+            }
+
+            // 显示加载状态
+            document.getElementById('performanceResults').style.display = 'none';
+            showNotification('正在测试网站性能...', 'info');
+
+            // 模拟性能测试
+            setTimeout(() => {
+                const metrics = {
+                    loadTime: (Math.random() * 3 + 0.5).toFixed(1),
+                    pageSize: (Math.random() * 2 + 0.1).toFixed(1),
+                    requests: Math.floor(Math.random() * 50 + 10),
+                    performanceScore: Math.floor(Math.random() * 40 + 60)
+                };
+
+                // 显示结果
+                document.getElementById('loadTime').textContent = metrics.loadTime + 's';
+                document.getElementById('pageSize').textContent = metrics.pageSize + 'MB';
+                document.getElementById('requests').textContent = metrics.requests;
+                document.getElementById('performanceScore').textContent = metrics.performanceScore;
+
+                // 设置颜色
+                setMetricColor('loadTime', metrics.loadTime, 2, 4);
+                setMetricColor('pageSize', metrics.pageSize, 1, 2);
+                setMetricColor('requests', metrics.requests, 20, 40);
+                setMetricColor('performanceScore', metrics.performanceScore, 80, 60);
+
+                document.getElementById('performanceResults').style.display = 'grid';
+                showNotification('性能测试完成！', 'success');
+            }, 2000);
+        }
+
+        function setMetricColor(elementId, value, goodThreshold, averageThreshold) {
+            const element = document.getElementById(elementId);
+            const numValue = parseFloat(value);
+            
+            element.classList.remove('good', 'average', 'poor');
+            
+            if (numValue <= goodThreshold) {
+                element.classList.add('good');
+            } else if (numValue <= averageThreshold) {
+                element.classList.add('average');
+            } else {
+                element.classList.add('poor');
+            }
+        }
+
+        // 通知功能
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 p-4 rounded-md text-white z-50 ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 
+                type === 'info' ? 'bg-blue-500' : 'bg-gray-500'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // 3秒后移除
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // 启动高级网站构建器
+        function startAdvancedBuilder() {
+            const builderContainer = document.getElementById('advanced-builder');
+            if (builderContainer) {
+                builderContainer.innerHTML = `
+                    <div class="builder-interface">
+                        <div class="template-selection">
+                            <h3 class="text-xl font-semibold mb-4">选择网站模板</h3>
+                            <div class="templates-grid">
+                                <div class="template-card" data-template="personal">
+                                    <div class="template-preview">👤 个人网站</div>
+                                    <div class="template-info">
+                                        <h4>个人网站</h4>
+                                        <p>适合个人博客、简历展示</p>
+                                    </div>
+                                </div>
+                                <div class="template-card" data-template="business">
+                                    <div class="template-preview">🏢 商业网站</div>
+                                    <div class="template-info">
+                                        <h4>商业网站</h4>
+                                        <p>适合公司官网、产品展示</p>
+                                    </div>
+                                </div>
+                                <div class="template-card" data-template="portfolio">
+                                    <div class="template-preview">🎨 作品集</div>
+                                    <div class="template-info">
+                                        <h4>作品集</h4>
+                                        <p>适合设计师、摄影师</p>
+                                    </div>
+                                </div>
+                                <div class="template-card" data-template="blog">
+                                    <div class="template-preview">📝 博客网站</div>
+                                    <div class="template-info">
+                                        <h4>博客网站</h4>
+                                        <p>适合内容创作者</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="builder-workspace" style="display: none;">
+                            <div class="builder-sidebar">
+                                <h4>网站设置</h4>
+                                <div class="setting-group">
+                                    <label>网站名称</label>
+                                    <input type="text" id="builder-site-name" placeholder="输入网站名称" value="我的网站">
+                                </div>
+                                <div class="setting-group">
+                                    <label>主题颜色</label>
+                                    <input type="color" id="builder-theme-color" value="#3b82f6">
+                                </div>
+                                <div class="setting-group">
+                                    <label>字体选择</label>
+                                    <select id="builder-font">
+                                        <option value="Noto Sans SC">思源黑体</option>
+                                        <option value="Microsoft YaHei">微软雅黑</option>
+                                        <option value="SimHei">黑体</option>
+                                    </select>
+                                </div>
+                                <div class="setting-group">
+                                    <button onclick="downloadBuiltWebsite()" class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                                        下载网站
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="builder-preview">
+                                <div class="preview-header">
+                                    <h4>实时预览</h4>
+                                    <div class="preview-controls">
+                                        <button id="preview-desktop" class="active">桌面</button>
+                                        <button id="preview-tablet">平板</button>
+                                        <button id="preview-mobile">手机</button>
+                                    </div>
+                                </div>
+                                <div class="preview-content">
+                                    <iframe id="builder-preview-frame"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 绑定事件
+                bindAdvancedBuilderEvents();
+                
+                // 滚动到构建器
+                builderContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function bindAdvancedBuilderEvents() {
+            // 模板选择
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // 显示工作区
+                    document.querySelector('.template-selection').style.display = 'none';
+                    document.querySelector('.builder-workspace').style.display = 'grid';
+                    
+                    // 初始化预览
+                    updateAdvancedPreview();
+                });
+            });
+
+            // 设置变更
+            ['builder-site-name', 'builder-theme-color', 'builder-font'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', updateAdvancedPreview);
+                }
+            });
+
+            // 预览模式切换
+            document.querySelectorAll('.preview-controls button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.preview-controls button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const mode = this.id;
+                    const iframe = document.getElementById('builder-preview-frame');
+                    const container = iframe.parentElement;
+                    
+                    container.className = 'preview-content';
+                    
+                    if (mode === 'preview-tablet') {
+                        container.classList.add('tablet-mode');
+                    } else if (mode === 'preview-mobile') {
+                        container.classList.add('mobile-mode');
+                    } else {
+                        container.classList.add('desktop-mode');
+                    }
+                });
+            });
+        }
+
+        function updateAdvancedPreview() {
+            const siteName = document.getElementById('builder-site-name')?.value || '我的网站';
+            const themeColor = document.getElementById('builder-theme-color')?.value || '#3b82f6';
+            const font = document.getElementById('builder-font')?.value || 'Noto Sans SC';
+
+            const html = generateAdvancedHTML(siteName, themeColor, font);
+            
+            const iframe = document.getElementById('builder-preview-frame');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(html);
+            iframeDoc.close();
+        }
+
+        function generateAdvancedHTML(siteName, themeColor, font) {
+            return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${siteName}</title>
+    <link href="https://fonts.googleapis.com/css2?family=${font.replace(' ', '+')}:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: '${font}', sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background: ${themeColor}; color: white; padding: 2rem 0; text-align: center; }
+        nav { background: #f8fafc; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; }
+        nav a { text-decoration: none; color: #4b5563; font-weight: 500; padding: 0.5rem 1rem; border-radius: 0.375rem; transition: all 0.3s ease; }
+        nav a:hover { background: ${themeColor}; color: white; }
+        main { padding: 3rem 0; }
+        .section { margin-bottom: 3rem; }
+        .section h2 { font-size: 2rem; color: #1f2937; margin-bottom: 1rem; text-align: center; }
+        footer { background: #1f2937; color: white; text-align: center; padding: 2rem 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>${siteName}</h1>
+            <p>专业网站开发服务</p>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <section class="section">
+                <h2>欢迎来到${siteName}</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto;">我们致力于为您提供最优质的网站开发服务，帮助您在互联网上建立专业的品牌形象。</p>
+            </section>
+            
+            <section class="section">
+                <h2>我们的服务</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div style="background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                        <h3 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 1rem;">快速高效</h3>
+                        <p style="color: #6b7280;">采用最新技术，确保网站运行速度快，用户体验佳</p>
+                    </div>
+                    <div style="background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                        <h3 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 1rem;">响应式设计</h3>
+                        <p style="color: #6b7280;">完美适配各种设备，无论是电脑、平板还是手机</p>
+                    </div>
+                    <div style="background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                        <h3 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 1rem;">安全可靠</h3>
+                        <p style="color: #6b7280;">采用业界标准的安全措施，保护您的数据和隐私</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ${siteName}. 保留所有权利.</p>
+        </div>
+    </footer>
+</body>
+</html>`;
+        }
+
+        function downloadBuiltWebsite() {
+            const siteName = document.getElementById('builder-site-name')?.value || '我的网站';
+            const themeColor = document.getElementById('builder-theme-color')?.value || '#3b82f6';
+            const font = document.getElementById('builder-font')?.value || 'Noto Sans SC';
+
+            const html = generateAdvancedHTML(siteName, themeColor, font);
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('网站文件已下载！', 'success');
+        }
+
+        // 显示部署步骤详情
+        function showDeploymentStep(step) {
+            const detailsContainer = document.getElementById('deployment-details');
+            
+            // 隐藏所有步骤内容
+            document.querySelectorAll('[id^="step-"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // 显示选中的步骤
+            document.getElementById(`step-${step}-content`).style.display = 'block';
+            detailsContainer.style.display = 'block';
+            
+            // 滚动到详情区域
+            detailsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化滚动动画
+            initScrollEffects();
+        });
+    </script>
+</body>
+</html>

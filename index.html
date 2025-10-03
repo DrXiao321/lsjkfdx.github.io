@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站发布教程 - 从零开始学习网站建设</title>
+    <meta name="description" content="详细的网站发布教程，专为初学者设计。从域名注册到网站上线，一步步教你建立自己的网站。">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-orange: #f59e0b;
+            --bg-gray: #f8fafc;
+            --text-dark: #1f2937;
+        }
+        
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .font-serif {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(59, 130, 246, 0.8) 100%),
+                        url('resources/hero-bg.jpg') center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .progress-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, var(--secondary-blue), var(--accent-orange));
+            transition: width 0.5s ease;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .path-card {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .path-card:hover {
+            border-color: var(--secondary-blue);
+            transform: scale(1.02);
+        }
+        
+        .path-card.selected {
+            border-color: var(--accent-orange);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.1));
+        }
+        
+        .domain-result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .domain-result.available {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .domain-result.unavailable {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .completion-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            border-left: 4px solid var(--accent-orange);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+        }
+        
+        .notification.info {
+            background: var(--secondary-blue);
+        }
+        
+        .notification.success {
+            background: #10b981;
+        }
+        
+        .notification.error {
+            background: #ef4444;
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .code-editor {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .code-input {
+            background: transparent;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            resize: none;
+            border: none;
+            outline: none;
+        }
+        
+        .code-preview {
+            background: white;
+            border: 1px solid #e5e7eb;
+            min-height: 200px;
+        }
+        
+        .step-indicator {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6b7280;
+        }
+        
+        .step-indicator.active {
+            background: var(--secondary-blue);
+            color: white;
+        }
+        
+        .step-indicator.completed {
+            background: var(--accent-orange);
+            color: white;
+        }
+        
+        .website-preview {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            min-height: 300px;
+            background: white;
+        }
+        
+        .preview-header {
+            padding: 1rem;
+            color: white;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .preview-content {
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-serif font-bold text-gray-900">网站发布教程</h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">首页</a>
+                        <a href="tutorial.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">详细教程</a>
+                        <a href="tools.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">工具资源</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero区域 -->
+    <section class="hero-bg pt-16 pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center">
+                <h1 class="hero-title text-4xl md:text-6xl font-serif font-bold text-white mb-6">
+                    零基础学会网站发布
+                </h1>
+                <p class="hero-subtitle text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                    从域名注册到网站上线，详细的图文教程和实用工具，让你轻松掌握网站发布的每个步骤
+                </p>
+                <div class="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="tutorial.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                        开始学习
+                    </a>
+                    <a href="#learning-paths" class="bg-white/20 hover:bg-white/30 text-white px-8 py-3 rounded-lg font-semibold transition-colors backdrop-blur-sm">
+                        选择学习路径
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 学习进度 -->
+    <section class="py-8 bg-white/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="progress-container rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">学习进度</h3>
+                    <span class="progress-text text-sm text-gray-600">学习进度: 0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="progress-fill h-3 rounded-full" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">完成所有章节学习，成为网站发布专家！</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 学习路径选择 -->
+    <section id="learning-paths" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">选择你的学习路径</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    根据你的经验水平选择最适合的学习路径，我们为你量身定制了不同的学习内容
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="path-card card-hover p-8 rounded-xl animate-on-scroll" data-path="beginner">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">🌱</span>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold text-gray-900 mb-2">零基础入门</h3>
+                        <p class="text-gray-600">从未接触过网站开发，想要从零开始学习</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            网站基础概念讲解
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            详细的操作步骤说明
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            图文并茂的教程内容
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            常见问题解答
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="path-card card-hover p-8 rounded-xl animate-on-scroll" data-path="experienced">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">🚀</span>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold text-gray-900 mb-2">快速上手</h3>
+                        <p class="text-gray-600">有一定基础，想要快速掌握网站发布流程</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            重点步骤快速指南
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            实用工具和技巧
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            高级配置选项
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-2">✓</span>
+                            最佳实践建议
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 路径内容 -->
+            <div id="beginner-content" class="path-content" style="display: none;">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h3 class="text-2xl font-serif font-bold mb-6">零基础学习路径</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">📚 学习内容</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">1</span>
+                                    <span>网站基础概念和原理</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">2</span>
+                                    <span>域名注册和DNS设置</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">3</span>
+                                    <span>选择和配置网站托管</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">4</span>
+                                    <span>HTML/CSS基础知识</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">5</span>
+                                    <span>网站文件上传和发布</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">🎯 学习目标</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• 理解网站工作原理</li>
+                                <li>• 掌握域名和托管概念</li>
+                                <li>• 学会基础HTML/CSS</li>
+                                <li>• 能够独立发布简单网站</li>
+                                <li>• 了解网站维护基础知识</li>
+                            </ul>
+                            <div class="mt-6">
+                                <a href="tutorial.html?path=beginner" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    开始零基础学习
+                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="experienced-content" class="path-content" style="display: none;">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h3 class="text-2xl font-serif font-bold mb-6">快速上手路径</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">⚡ 核心内容</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center p-3 bg-orange-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">1</span>
+                                    <span>域名和托管快速配置</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-orange-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">2</span>
+                                    <span>多种部署方式对比</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-orange-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">3</span>
+                                    <span>性能优化技巧</span>
+                                </div>
+                                <div class="flex items-center p-3 bg-orange-50 rounded-lg">
+                                    <span class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">4</span>
+                                    <span>SEO和安全配置</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">🚀 快速通道</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• 30分钟内完成网站部署</li>
+                                <li>• 掌握多种托管方案</li>
+                                <li>• 学会性能监控和优化</li>
+                                <li>• 了解高级安全配置</li>
+                            </ul>
+                            <div class="mt-6">
+                                <a href="tutorial.html?path=experienced" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                                    开始快速学习
+                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 网站构建器快速入门 -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">快速构建你的网站</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">使用我们的网站构建器，只需几分钟就能创建专业的网站基础结构</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-8 shadow-lg animate-on-scroll">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4">三步创建网站</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">1</div>
+                                <div>
+                                    <h4 class="font-semibold">填写基本信息</h4>
+                                    <p class="text-gray-600 text-sm">输入网站名称、描述和联系信息</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">2</div>
+                                <div>
+                                    <h4 class="font-semibold">选择样式主题</h4>
+                                    <p class="text-gray-600 text-sm">选择颜色方案和布局风格</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">3</div>
+                                <div>
+                                    <h4 class="font-semibold">生成网站代码</h4>
+                                    <p class="text-gray-600 text-sm">获得完整的HTML代码和预览效果</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button onclick="showQuickBuilder()" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                立即开始构建
+                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="text-center mb-4">
+                            <h4 class="font-semibold text-gray-700">网站构建器演示</h4>
+                        </div>
+                        <div id="quick-builder-demo" class="bg-white rounded-lg p-4 border-2 border-dashed border-gray-300">
+                            <div class="text-center py-8">
+                                <div class="text-4xl mb-4">🚀</div>
+                                <p class="text-gray-600">点击"立即开始构建"体验完整功能</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教程内容预览 -->
+    <section class="py-16 bg-white/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">完整教程大纲</h2>
+                <p class="text-lg text-gray-600">从基础概念到高级优化，系统学习网站发布的每个环节</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🌐</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">域名注册与配置</h3>
+                    <p class="text-gray-600 mb-4">学习如何选择和注册合适的域名，配置DNS设置，让你的网站有一个专业的地址。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 15分钟</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">☁️</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">网站托管选择</h3>
+                    <p class="text-gray-600 mb-4">了解不同类型的托管服务，学会选择适合你需求的托管方案，并完成基本配置。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 20分钟</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">💻</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">HTML/CSS基础</h3>
+                    <p class="text-gray-600 mb-4">掌握网页开发的基础语言，学会创建简单的网页结构和样式设计。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 30分钟</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">📤</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">网站文件上传</h3>
+                    <p class="text-gray-600 mb-4">学习如何使用FTP工具或控制面板上传网站文件，配置网站根目录和文件权限。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 15分钟</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🚀</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">网站上线发布</h3>
+                    <p class="text-gray-600 mb-4">完成最后的配置和测试，让你的网站正式上线，向世界展示你的作品。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 10分钟</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card card-hover p-6 rounded-xl animate-on-scroll">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🔧</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">网站维护优化</h3>
+                    <p class="text-gray-600 mb-4">学习网站日常维护、性能优化、安全设置等高级技巧，让你的网站更加专业。</p>
+                    <div class="flex items-center text-blue-600 text-sm font-medium">
+                        <span>预计学习时间: 25分钟</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 域名搜索工具 -->
+    <section class="py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">域名搜索工具</h2>
+                <p class="text-lg text-gray-600">输入你想要的域名，检查可用性并查看不同后缀的价格</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-8 shadow-sm animate-on-scroll">
+                <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <input 
+                        type="text" 
+                        id="domainInput" 
+                        placeholder="输入你想要的域名 (例如: mywebsite)" 
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                    <button 
+                        id="domainSearchBtn" 
+                        class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                    >
+                        搜索域名
+                    </button>
+                </div>
+                
+                <div id="domainResults" class="space-y-2">
+                    <div class="text-center text-gray-500 py-8">
+                        <p>输入域名后点击搜索按钮查看结果</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="py-16 bg-white/30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">常见问题</h2>
+                <p class="text-lg text-gray-600">初学者最常遇到的问题和解答</p>
+            </div>
+            
+            <div class="space-y-6 animate-on-scroll">
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-3">我需要学习编程才能发布网站吗？</h3>
+                    <p class="text-gray-600">不需要！现在有很多可视化工具和网站构建器，可以让你在不写代码的情况下创建和发布网站。不过学习一些基础的HTML/CSS知识会让你的网站更加专业和灵活。</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-3">发布一个网站需要多少钱？</h3>
+                    <p class="text-gray-600">成本主要包括域名费用（每年约50-200元）和托管费用（每月约20-500元不等）。对于个人网站或小型项目，总成本通常在每年200-1000元之间。也有很多免费的选择，比如GitHub Pages。</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-3">网站发布需要多长时间？</h3>
+                    <p class="text-gray-600">如果一切顺利，从注册域名到网站上线通常只需要几个小时。域名解析可能需要24-48小时才能完全生效。学习整个流程可能需要几天到几周的时间，取决于你的学习进度。</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-3">我需要购买什么样的托管服务？</h3>
+                    <p class="text-gray-600">对于初学者，建议选择共享主机或云主机，价格便宜且易于管理。随着网站访问量增加，可以考虑升级到VPS或专用服务器。我们推荐从Bluehost、SiteGround等知名服务商开始。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 学习统计和成就 -->
+    <section class="py-16 bg-white/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">学习成就系统</h2>
+                <p class="text-lg text-gray-600">完成学习获得成就徽章，记录你的进步历程</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white rounded-xl p-6 shadow-sm text-center animate-on-scroll">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">🏆</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">初学者徽章</h3>
+                    <p class="text-gray-600 mb-4">完成前3章学习</p>
+                    <div class="progress-bar bg-gray-200 rounded-full h-2">
+                        <div class="progress-fill bg-yellow-500 h-2 rounded-full" style="width: 0%" data-target="30"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">进度: <span class="progress-text">0%</span></p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm text-center animate-on-scroll">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">💻</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">开发者徽章</h3>
+                    <p class="text-gray-600 mb-4">完成后5章学习</p>
+                    <div class="progress-bar bg-gray-200 rounded-full h-2">
+                        <div class="progress-fill bg-blue-500 h-2 rounded-full" style="width: 0%" data-target="50"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">进度: <span class="progress-text">0%</span></p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm text-center animate-on-scroll">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl">🚀</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">专家徽章</h3>
+                    <p class="text-gray-600 mb-4">完成所有章节并发布网站</p>
+                    <div class="progress-bar bg-gray-200 rounded-full h-2">
+                        <div class="progress-fill bg-green-500 h-2 rounded-full" style="width: 0%" data-target="100"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">进度: <span class="progress-text">0%</span></p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-8 shadow-sm animate-on-scroll">
+                <h3 class="text-2xl font-semibold mb-6 text-center">学习统计</h3>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2" id="chapters-completed">0</div>
+                        <p class="text-gray-600">已完成章节</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2" id="tools-used">0</div>
+                        <p class="text-gray-600">使用工具次数</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2" id="code-examples">0</div>
+                        <p class="text-gray-600">代码示例查看</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-600 mb-2" id="study-time">0</div>
+                        <p class="text-gray-600">学习时长(分钟)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-serif font-bold mb-4">网站发布教程</h3>
+                    <p class="text-gray-400 mb-4">让每个人都能轻松创建和发布自己的网站。从零基础到专业水平，一步步教你掌握网站开发技能。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">📧</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">💬</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">🐦</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">快速导航</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="tutorial.html" class="text-gray-400 hover:text-white transition-colors">详细教程</a></li>
+                        <li><a href="tools.html" class="text-gray-400 hover:text-white transition-colors">工具资源</a></li>
+                        <li><a href="#learning-paths" class="text-gray-400 hover:text-white transition-colors">学习路径</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">实用工具</h4>
+                    <ul class="space-y-2">
+                        <li><a href="tools.html#domain-search" class="text-gray-400 hover:text-white transition-colors">域名搜索</a></li>
+                        <li><a href="tools.html#website-builder" class="text-gray-400 hover:text-white transition-colors">网站构建器</a></li>
+                        <li><a href="tools.html#code-validator" class="text-gray-400 hover:text-white transition-colors">代码验证</a></li>
+                        <li><a href="tools.html#performance-test" class="text-gray-400 hover:text-white transition-colors">性能测试</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">学习资源</h4>
+                    <ul class="space-y-2">
+                        <li><a href="tutorial.html#chapter1" class="text-gray-400 hover:text-white transition-colors">基础概念</a></li>
+                        <li><a href="tutorial.html#chapter2" class="text-gray-400 hover:text-white transition-colors">域名注册</a></li>
+                        <li><a href="tutorial.html#chapter3" class="text-gray-400 hover:text-white transition-colors">网站托管</a></li>
+                        <li><a href="tutorial.html#chapter4" class="text-gray-400 hover:text-white transition-colors">HTML基础</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm">© 2024 网站发布教程. 保留所有权利.</p>
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">隐私政策</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">使用条款</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
